@@ -183,7 +183,7 @@ void loop()
 int leftFoot,rightFoot; //will hold foot speed values (-100 to 100)
 int prevLeftFoot,prevRightFoot; //will hold foot speed values (-100 to 100)
 float LeftSpeed,RightSpeed;
-void mixBHD(byte stickX, byte stickY, byte maxSpeed){  //maxDriveSpeed should be between 90 and 180
+void mixMecanum(byte stickX, byte stickY, byte stickX2, byte maxSpeed){  //maxDriveSpeed should be between 90 and 180
     // This is BigHappyDude's mixing function, for differential (tank) style drive using two motor controllers.
     // Takes a joysticks X and Y values, mixes using the diamind mix, and output a value 0-180 for left and right motors.     
     // 180,180 = both feet full speed forward.
@@ -207,7 +207,6 @@ void mixBHD(byte stickX, byte stickY, byte maxSpeed){  //maxDriveSpeed should be
       stickY = 128;
     }
     
-    //if(((stickX <= 113) || (stickX >= 141)) || ((stickY <= 113) || (stickY >= 141))){  //  if movement outside deadzone
     if((stickX != 128) || (stickY != 128)) {
       //  Map to easy grid -100 to 100 in both axis, including deadzones.
       int YDist = 0;  // set to 0 as a default value if no if used.
@@ -300,8 +299,11 @@ void stopFeet() {
   #elif FOOT_CONTROLLER == 1
   leftFoot=90;
   rightFoot=90;
-  leftFootSignal.write(90);
-  rightFootSignal.write(90);
+  //leftFootSignal.write(90);
+  //rightFootSignal.write(90);
+  // Use writeMicroseconds to avoid any potential PWM issues.
+  leftFootSignal.writeMicroseconds(1500);
+  rightFootSignal.writeMicroseconds(1500);
   #endif
   #ifdef SHADOW_VERBOSE      
    output += "\r\n***Foot Motor STOPPED***\r\n";
@@ -532,6 +534,7 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                     isFootMotorStopped = false;
                     footX=myPS->getAnalogHat(LeftHatX);
                     footY=myPS->getAnalogHat(LeftHatY);
+                    footX2=myPS2->getAnalogHat(LeftHatX);
                     //Experimental Q85. Untested Madness!!! Use at your own risk and expect your droid to run away in flames.
                     //use BigHappyDude's mixing algorythm to get values for each foot...
 
@@ -540,11 +543,11 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                     #ifdef INTERNAL_MIXING
 
                     if (overSpeedSelected) {
-                      mixBHD(footX,footY,drivespeed2);
+                      mixMecanum(footX,footY,footX2,drivespeed2);
                       maxDriveSpeed = drivespeed2;
                     }
                     else {
-                      mixBHD(footX,footY,drivespeed1);
+                      mixMecanum(footX,footY,footX2,drivespeed1);
                       maxDriveSpeed = drivespeed1;                 
                     }
                     
@@ -633,10 +636,6 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                       #endif
                   }              
               }
-              
-              // The Sabertooth won't act on mixed mode packet serial commands until
-              // it has received power levels for BOTH throttle and turning, since it
-              // mixes the two together to get diff-drive power levels for both motors.
               
               previousFootMillis = currentMillis;
               return true; //we sent a foot command   
