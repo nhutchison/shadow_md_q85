@@ -183,7 +183,7 @@ void loop()
 int leftFoot,rightFoot; //will hold foot speed values (-100 to 100)
 int prevLeftFoot,prevRightFoot; //will hold foot speed values (-100 to 100)
 float LeftSpeed,RightSpeed;
-void mixMecanum(byte stickX, byte stickY, byte stickX2, byte maxSpeed){  //maxDriveSpeed should be between 90 and 180
+void mixBHD(byte stickX, byte stickY, byte maxSpeed){  //maxDriveSpeed should be between 90 and 180
     // This is BigHappyDude's mixing function, for differential (tank) style drive using two motor controllers.
     // Takes a joysticks X and Y values, mixes using the diamind mix, and output a value 0-180 for left and right motors.     
     // 180,180 = both feet full speed forward.
@@ -534,7 +534,6 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                     isFootMotorStopped = false;
                     footX=myPS->getAnalogHat(LeftHatX);
                     footY=myPS->getAnalogHat(LeftHatY);
-                    footX2=myPS2->getAnalogHat(LeftHatX);
                     //Experimental Q85. Untested Madness!!! Use at your own risk and expect your droid to run away in flames.
                     //use BigHappyDude's mixing algorythm to get values for each foot...
 
@@ -543,11 +542,11 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                     #ifdef INTERNAL_MIXING
 
                     if (overSpeedSelected) {
-                      mixMecanum(footX,footY,footX2,drivespeed2);
+                      mixBHD(footX,footY,drivespeed2);
                       maxDriveSpeed = drivespeed2;
                     }
                     else {
-                      mixMecanum(footX,footY,footX2,drivespeed1);
+                      mixBHD(footX,footY,drivespeed1);
                       maxDriveSpeed = drivespeed1;                 
                     }
                     
