@@ -57,8 +57,8 @@
 #define FOOT_CONTROLLER 1 //0 for Sabertooth Serial or 1 for individual R/C output (for Q85 motors with 1 controller for each foot, or Sabertooth Mode 2 Independant Mixing)
 #define INTERNAL_MIXING
 
-//String PS3ControllerFootMac = "XX:XX:XX:XX:XX:XX";  //Set this to your FOOT PS3 controller MAC address
-String PS3ControllerFootMac = "00:07:04:0B:3E:7B";  //Set this to your FOOT PS3 controller MAC address
+String PS3ControllerFootMac = "XX:XX:XX:XX:XX:XX";  //Set this to your FOOT PS3 controller MAC address
+//String PS3ControllerFootMac = "00:07:04:0B:3E:7B";  //Set this to your FOOT PS3 controller MAC address
 String PS3ControllerDomeMAC = "XX:XX:XX:XX:XX:XX";  //Set to a secondary DOME PS3 controller MAC address (Optional)
 
 String PS3ControllerBackupFootMac = "XX";  //Set to the MAC Address of your BACKUP FOOT controller (Optional)
