@@ -340,7 +340,7 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
           
           return false;
 
-      } else if (!myPS->PS3NavigationConnected)
+      } else if (!myPS->PS3NavigationConnected || blockFootMotors)
       {
         
           if (!isFootMotorStopped)
@@ -841,12 +841,21 @@ void domeDrive()
     
   } else if (PS3NavFoot->PS3NavigationConnected && PS3NavFoot->getButtonPress(L2))
   {
-    
-     ps3NavControlSpeed = ps3DomeDrive(PS3NavFoot);
-
-     domeRotationSpeed = ps3NavControlSpeed; 
-
-     rotateDome(domeRotationSpeed,"Controller Move");
+    if (isFootMotorStopped) {
+      ps3NavControlSpeed = ps3DomeDrive(PS3NavFoot);
+      
+      domeRotationSpeed = ps3NavControlSpeed; 
+      
+      rotateDome(domeRotationSpeed,"Controller Move");
+      blockFootMotors = true; 
+    } else {
+      ps3NavControlSpeed = PS3NavFoot->getAnalogButton(L2);
+      domeRotationSpeed = (map(ps3NavControlSpeed, 0, 255, 0, domespeed));
+      if (!l2DomeDirection) {
+        domeRotationSpeed = -domeRotationSpeed;
+      }
+      rotateDome(domeRotationSpeed,"Controller Move");
+    }
     
   } else
   {
@@ -854,7 +863,9 @@ void domeDrive()
      {
          SyR->stop();
          isDomeMotorStopped = true;
+         l2DomeDirection = !l2DomeDirection;
      }
+     blockFootMotors = false;
   }  
 }  
 

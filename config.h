@@ -196,3 +196,7 @@ int leftFootDriveSpeed, rightFootDriveSpeed = 90;
 Servo leftFootSignal;
 Servo rightFootSignal;
 #endif
+
+// Single Controller Dome drive
+boolean blockFootMotors = false;
+int l2DomeDirection = 0;
