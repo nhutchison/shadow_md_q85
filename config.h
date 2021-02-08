@@ -57,14 +57,14 @@
 #define FOOT_CONTROLLER 1 //0 for Sabertooth Serial or 1 for individual R/C output (for Q85 motors with 1 controller for each foot, or Sabertooth Mode 2 Independant Mixing)
 #define INTERNAL_MIXING
 
-String PS3ControllerFootMac = "XX:XX:XX:XX:XX:XX";  //Set this to your FOOT PS3 controller MAC address
-//String PS3ControllerFootMac = "00:07:04:0B:3E:7B";  //Set this to your FOOT PS3 controller MAC address
+//String PS3ControllerFootMac = "XX:XX:XX:XX:XX:XX";  //Set this to your FOOT PS3 controller MAC address
+String PS3ControllerFootMac = "00:07:04:0B:3E:7B";  //Set this to your FOOT PS3 controller MAC address
 String PS3ControllerDomeMAC = "XX:XX:XX:XX:XX:XX";  //Set to a secondary DOME PS3 controller MAC address (Optional)
 
 String PS3ControllerBackupFootMac = "XX";  //Set to the MAC Address of your BACKUP FOOT controller (Optional)
 String PS3ControllerBackupDomeMAC = "XX";  //Set to the MAC Address of your BACKUP DOME controller (Optional)
 
-byte drivespeed1 = 10;   //For Speed Setting (Normal): set this to whatever speeds works for you. 0-stop, 127-full speed.
+byte drivespeed1 = 30;   //For Speed Setting (Normal): set this to whatever speeds works for you. 0-stop, 127-full speed.
 byte drivespeed2 = 127;   //For Speed Setting (Over Throttle): set this for when needing extra power. 0-stop, 127-full speed.
 
 byte turnspeed = 50;      // the higher this number the faster it will spin in place, lower - the easier to control.
@@ -187,6 +187,10 @@ byte action = 0;
 unsigned long DriveMillis = 0;
 
 int footDriveSpeed = 0;
+
+// We use independent ramping for each foot if we're on Q85/Neo Etc ...
+// Also the speed at "stop" is 90, not 0, so we set the default to 90. (servo mid point)
+int leftFootDriveSpeed, rightFootDriveSpeed = 90;
 
 #if FOOT_CONTROLLER ==1
 Servo leftFootSignal;

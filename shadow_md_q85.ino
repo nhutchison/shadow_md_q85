@@ -591,7 +591,7 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                       rightFoot=map(footY, 0, 180, servoMin, servoMax );
 
                     #endif
-                    
+
                     #ifdef SHADOW_VERBOSE   
                       if (prevLeftFoot!=leftFoot || prevRightFoot!=rightFoot) {
                         output += "  footX="+String(footX)+", footY="+String(footY);
@@ -608,7 +608,90 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                     #endif
 
                       //domeRotationSpeed = (map(joystickPosition, 0, 255, -domespeed, domespeed));
+
+                      // Do some ramping stuff here ....
+                      // May move this to a function once I know it works....
+                      if ((leftFootDriveSpeed < leftFoot) || (rightFootDriveSpeed < rightFoot))
+                      {
+                        
+                          if ((leftFoot-leftFootDriveSpeed)>(ramping+1))
+                          {
+                            leftFootDriveSpeed+=ramping;
+                              
+                            #ifdef SHADOW_VERBOSE      
+                                output += "\nRAMPING UP: leftFootSpeed: ";
+                                output += leftFootDriveSpeed;
+                                output += "  Stick Speed: ";
+                                output += leftFoot;
+                                output += "\n\r";
+                            #endif
+                              
+                          } else {
+                              leftFootDriveSpeed = leftFoot;
+                          }
+                          
+                          if ((rightFoot-rightFootDriveSpeed)>(ramping+1))
+                          {
+                            rightFootDriveSpeed+=ramping;
+                              
+                            #ifdef SHADOW_VERBOSE      
+                                output += "\nRAMPING UP: rightFootSpeed: ";
+                                output += rightFootDriveSpeed;
+                                output += "  Stick Speed: ";
+                                output += rightFoot;
+                                output += "\n\r";
+                            #endif
+                              
+                          } else {
+                              rightFootDriveSpeed = rightFoot;
+                          }
+                          
+                      } else if ((leftFootDriveSpeed > leftFoot) || (rightFootDriveSpeed < rightFoot))
+                      {
+                    
+                          if ((leftFootDriveSpeed-leftFoot)>(ramping+1))
+                          {
+                            
+                            leftFootDriveSpeed-=ramping;
+                              
+                            #ifdef SHADOW_VERBOSE      
+                                output += "\nRAMPING DOWN: footSpeed: ";
+                                output += leftFootDriveSpeed;
+                                output += "  Stick Speed: ";
+                                output += leftFoot;
+                                output += "\n\r";
+                            #endif
+                            
+                          } else {
+                              leftFootDriveSpeed = leftFoot;  
+                          }
+
+                          if ((rightFootDriveSpeed-rightFoot)>(ramping+1))
+                          {
+                            
+                            rightFootDriveSpeed-=ramping;
+                              
+                            #ifdef SHADOW_VERBOSE      
+                                output += "\nRAMPING DOWN: footSpeed: ";
+                                output += rightFootDriveSpeed;
+                                output += "  Stick Speed: ";
+                                output += rightFoot;
+                                output += "\n\r";
+                            #endif
+                            
+                          } else {
+                              rightFootDriveSpeed = rightFoot;  
+                          }
+                      } else
+                      {
+                          leftFootDriveSpeed = leftFoot;
+                          rightFootDriveSpeed = rightFoot;
+                      }
+
                       
+                      /*
+                       * This code is the non-ramping version 
+                       * 
                       //now we've got values for leftFoot and rightFoot, output those somehow...
                       if (prevLeftFoot!=leftFoot || prevRightFoot!=rightFoot) {
                         // This converts the servo angle (0-180) into us values
@@ -618,6 +701,18 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                         leftFootSignal.writeMicroseconds(LeftFootus);
                         rightFootSignal.writeMicroseconds(RightFootus);
                       }
+                      */
+
+                      // This code enforces ramping.
+                      if (prevLeftFoot!=leftFoot || prevRightFoot!=rightFoot) {
+                        // This converts the servo angle (0-180) into us values
+                        int LeftFootus=map(leftFootDriveSpeed, 0, 180, 1000, 2000);
+                        int RightFootus=map(rightFootDriveSpeed, 0, 180, 1000, 2000);
+                        // Now send the us values
+                        leftFootSignal.writeMicroseconds(LeftFootus);
+                        rightFootSignal.writeMicroseconds(RightFootus);
+                      }
+                      
                       
                     prevLeftFoot=leftFoot;
                     prevRightFoot=rightFoot;
