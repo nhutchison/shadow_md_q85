@@ -189,8 +189,9 @@ unsigned long DriveMillis = 0;
 int footDriveSpeed = 0;
 
 // We use independent ramping for each foot if we're on Q85/Neo Etc ...
-// Also the speed at "stop" is 90, not 0, so we set the default to 90. (servo mid point)
-int leftFootDriveSpeed, rightFootDriveSpeed = 90;
+// Also the speed at "90" is 90, not 0, so we set the default to 90. (servo mid point)
+int leftFootDriveSpeed = 90;
+int rightFootDriveSpeed = 90;
 
 #if FOOT_CONTROLLER ==1
 Servo leftFootSignal;

@@ -595,7 +595,7 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                     #ifdef SHADOW_VERBOSE   
                       if (prevLeftFoot!=leftFoot || prevRightFoot!=rightFoot) {
                         output += "  footX="+String(footX)+", footY="+String(footY);
-                        output += "\n  LeftSpeed="+String(LeftSpeed)+", RightSpeed="+String(RightSpeed);
+                        output += "\n  LeftSpeed="+String(leftFootDriveSpeed)+", RightSpeed="+String(rightFootDriveSpeed);
                         if (overSpeedSelected) output += "\ndrivespeed2";
                         else output += "\ndrivespeed1: ";
                         output += maxDriveSpeed;
