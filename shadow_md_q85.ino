@@ -325,7 +325,7 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
               {
                 output += "Drive Stick is disabled\r\n";
               }
-            #endif
+            #endif // SHADOW_VERBOSE
 
           if (!isFootMotorStopped)
           {
@@ -335,7 +335,7 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
               
               #ifdef SHADOW_VERBOSE      
                   output += "\r\n***Foot Motor STOPPED***\r\n";
-              #endif              
+              #endif // SHADOW_VERBOSE           
           }
           
           return false;
@@ -351,7 +351,7 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
 
               #ifdef SHADOW_VERBOSE      
                   output += "\r\n***Foot Motor STOPPED***\r\n";
-              #endif              
+              #endif // SHADOW_VERBOSE         
           }
           
           return false;
@@ -368,7 +368,7 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
 
               #ifdef SHADOW_VERBOSE      
                   output += "\r\n***Foot Motor STOPPED***\r\n";
-              #endif
+              #endif // SHADOW_VERBOSE
               
           }
           
@@ -501,7 +501,7 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
           {
               isFootMotorStopped = false;   
           }
-         #endif
+         #endif // FOOT_CONTROLLER == 0
 
           currentMillis = millis();
           
@@ -513,7 +513,7 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
               #elif FOOT_CONTROLLER == 1
               //if (footDriveSpeed != 0) //footDriveSpeed doesn't change with the Q85's
               if (true)
-              #endif
+              #endif // FOOT_CONTROLLER
               {
                 
                   #ifdef SHADOW_VERBOSE   
@@ -525,7 +525,7 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                     output += "\nTime of command: ";              
                     output += millis();
                     #endif
-                  #endif
+                  #endif // SHADOW_VERBOSE
 
                   #if FOOT_CONTROLLER == 0
                     ST->turn(turnnum * invertTurnDirection);
@@ -550,7 +550,7 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                       maxDriveSpeed = drivespeed1;                 
                     }
                     
-                    #else
+                    #else // INTERNAL_MIXING
                       maxDriveSpeed = drivespeed1;
                       // Set the max speed of the drive motors
                       if (overSpeedSelected) {
@@ -590,7 +590,7 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                       leftFoot=map(footX, 0, 180, servoMin, servoMax );
                       rightFoot=map(footY, 0, 180, servoMin, servoMax );
 
-                    #endif
+                    #endif // INTERNAL_MIXING
 
                     #ifdef SHADOW_VERBOSE   
                       if (prevLeftFoot!=leftFoot || prevRightFoot!=rightFoot) {
@@ -605,7 +605,7 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                         output += rightFoot;
 
                       }
-                    #endif
+                    #endif // SHADOW_VERBOSE
 
                       //domeRotationSpeed = (map(joystickPosition, 0, 255, -domespeed, domespeed));
 
@@ -624,10 +624,21 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                                 output += "  Stick Speed: ";
                                 output += leftFoot;
                                 output += "\n\r";
-                            #endif
+                            #endif // SHADOW_VERBOSE
                               
                           } else {
                               leftFootDriveSpeed = leftFoot;
+                              #ifdef SHADOW_VERBOSE
+                                output += "\nRAMPING UP DONE: leftFootSpeed: ";
+                                output += leftFootDriveSpeed;
+                                output += "  Stick Speed: ";
+                                output += leftFoot;
+                                output += "  Stick X: ";
+                                output += footX;
+                                output += "  Stick Y: ";
+                                output += footY;
+                                output += "\n\r";
+                              #endif // SHADOW_VERBOSE
                           }
                           
                           if ((rightFoot-rightFootDriveSpeed)>(ramping+1))
@@ -640,13 +651,24 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                                 output += "  Stick Speed: ";
                                 output += rightFoot;
                                 output += "\n\r";
-                            #endif
+                            #endif // SHADOW_VERBOSE
                               
                           } else {
                               rightFootDriveSpeed = rightFoot;
+                              #ifdef SHADOW_VERBOSE
+                                output += "\nRAMPING UP DONE: rightFootSpeed: ";
+                                output += rightFootDriveSpeed;
+                                output += "  Stick Speed: ";
+                                output += rightFoot;
+                                output += "  Stick X: ";
+                                output += footX;
+                                output += "  Stick Y: ";
+                                output += footY;
+                                output += "\n\r";
+                              #endif // SHADOW_VERBOSE
                           }
                           
-                      } else if ((leftFootDriveSpeed > leftFoot) || (rightFootDriveSpeed < rightFoot))
+                      } else if ((leftFootDriveSpeed > leftFoot) || (rightFootDriveSpeed > rightFoot))
                       {
                     
                           if ((leftFootDriveSpeed-leftFoot)>(ramping+1))
@@ -660,10 +682,21 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                                 output += "  Stick Speed: ";
                                 output += leftFoot;
                                 output += "\n\r";
-                            #endif
+                            #endif // SHADOW_VERBOSE
                             
                           } else {
-                              leftFootDriveSpeed = leftFoot;  
+                              leftFootDriveSpeed = leftFoot;
+                              #ifdef SHADOW_VERBOSE      
+                                output += "\nRAMPING DOWN DONE: footSpeed: ";
+                                output += leftFootDriveSpeed;
+                                output += "  Stick Speed: ";
+                                output += leftFoot;
+                                output += "  Stick X: ";
+                                output += footX;
+                                output += "  Stick Y: ";
+                                output += footY;
+                                output += "\n\r";
+                            #endif // SHADOW_VERBOSE  
                           }
 
                           if ((rightFootDriveSpeed-rightFoot)>(ramping+1))
@@ -677,15 +710,39 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                                 output += "  Stick Speed: ";
                                 output += rightFoot;
                                 output += "\n\r";
-                            #endif
+                            #endif // SHADOW_VERBOSE
                             
                           } else {
-                              rightFootDriveSpeed = rightFoot;  
+                              rightFootDriveSpeed = rightFoot; 
+                              #ifdef SHADOW_VERBOSE      
+                                output += "\nRAMPING DOWN DONE: footSpeed: ";
+                                output += rightFootDriveSpeed;
+                                output += "  Stick Speed: ";
+                                output += rightFoot;
+                                output += "  Stick X: ";
+                                output += footX;
+                                output += "  Stick Y: ";
+                                output += footY;
+                                output += "\n\r";
+                            #endif // SHADOW_VERBOSE 
                           }
                       } else
                       {
                           leftFootDriveSpeed = leftFoot;
                           rightFootDriveSpeed = rightFoot;
+                          /*
+                           #ifdef SHADOW_VERBOSE      
+                                output += "\nRAMPING DONE: RightFootSpeed: ";
+                                output += rightFootDriveSpeed;
+                                output += "  Stick Speed: ";
+                                output += rightFoot;
+                                output += " LeftFootSpeed: ";
+                                output += leftFootDriveSpeed;
+                                output += "  Stick Speed: ";
+                                output += leftFoot;
+                                output += "\n\r";
+                            #endif // SHADOW_VERBOSE 
+                            */
                       }
 
                       
@@ -716,7 +773,7 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                       
                     prevLeftFoot=leftFoot;
                     prevRightFoot=rightFoot;
-                  #endif
+                  #endif // FOOT_CONTROLLER == 1
               } else
               {    
                   if (!isFootMotorStopped)
@@ -727,7 +784,7 @@ boolean ps3FootMotorDrive(PS3BT* myPS = PS3NavFoot)
                       
                       #ifdef SHADOW_VERBOSE      
                          output += "\r\n***Foot Motor STOPPED***\r\n";
-                      #endif
+                      #endif // SHADOW_VERBOSE
                   }              
               }
               
